@@ -1,213 +1,110 @@
-import Button from "react-bootstrap/Button";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
-import Modal from "react-bootstrap/Modal";
-import "./App.css";
+import { useState, useEffect } from "react";
+import Body from "./components/Body";
+// import { STUDENTS } from "./mockData";
+import ModalDelete from "./components/modalDelete";
+import ModalAdd from "./components/modalAdd";
+import ModalEdit from "./components/modalEdit";
 
 function App() {
-const [show, setShow] = useState(false);
-const handleClose = () => setShow(false);
-const handleShow = () => setShow(true);
+  // const [students, setStudents] = useState([STUDENTS]);
+  const [students, setStudents] = useState([]);
+  const [showModalDelete, setShowModalDelete] = useState(false);
+  const [Id, setId] = useState(0);
+  const [name, setName] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
+  const [showModalAdd, setShowModalAdd] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
 
-return (
-<div className="container">
-  <h1>Danh sách học viên</h1>
-  <Button variant="success" onClick={handleShow}>
-    Add student
-  </Button>
+  useEffect(() => {
+    async function getUsers() {
+      const res = await fetch("http://localhost:3001/users");
+      const data = await res.json();
+      setStudents(data);
+    }
+    getUsers();
+  }, []);
+  // bật tắt modal delete
+  const openModalDelete = (studentId) => {
+    setShowModalDelete(true);
+    setId(studentId);
+  };
+  const closeModalDelete = () => {
+    setShowModalDelete(false);
+  };
 
-  <Modal show={show} onHide={handleClose}>
-    <Modal.Header closeButton>
-      <Modal.Title>Add student</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-      <div>
-        <form method="POST">
-          <div className="form-group row">
-            <label htmlFor="name" className="col-sm-12 col-form-label">
-              Full name <span>*</span>
-            </label>
-            <div className="col-sm-12">
-              <input type="text" className="form-control" id="name" placeholder="Full name" />
-            </div>
-          </div>
-          <div className="form-group row">
-            <label htmlFor="dob" className="col-sm-12 col-form-label">
-              Date of birth
-            </label>
-            <div className="col-sm-12">
-              <input type="text" className="form-control" id="dob" placeholder="Date of birth" />
-            </div>
-          </div>
-          <div className="form-group row">
-            <label htmlFor="email" className="col-sm-12 col-form-label">
-              Email <span>*</span>
-            </label>
-            <div className="col-sm-12">
-              <input type="text" className="form-control" id="email" placeholder="Email" />
-            </div>
-          </div>
-          <div className="form-group row">
-            <label htmlFor="phone" className="col-sm-12 col-form-label">
-              Phone <span>*</span>
-            </label>
-            <div className="col-sm-12">
-              <input type="number" className="form-control" id="phone" placeholder="Phone number" />
-            </div>
-          </div>
-        </form>
-      </div>
-    </Modal.Body>
-    <Modal.Footer>
-      <Button variant="secondary" onClick={handleClose}>
-        Close
-      </Button>
-      <Button variant="primary" onClick={handleClose}>
-        Save Changes
-      </Button>
-    </Modal.Footer>
-  </Modal>
-  <table className="table table-striped table-hover">
-    <thead>
-      <tr>
-        <th>Full name</th>
-        <th>Date of birth</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Winnifred Tribe</td>
-        <td>2000</td>
-        <td>wtribe@kickstarter.com</td>
-        <td>867-130-6017</td>
-        <td>
-          <ul class="list-inline m-0 text-center">
-            <li class="list-inline-item">
-              <Button className="btn btn-primary btn-sm" onClick={handleShow}>
-                Edit
-              </Button>
+  // bật tắt modal add
+  const openModalAdd = () => {
+    setShowModalAdd(true);
+  };
+  const closeModalAdd = () => {
+    setShowModalAdd(false);
+  };
 
-              <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                  <Modal.Title>Edit information</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <div>
-                    <form method="POST">
-                      <div className="form-group row">
-                        <label htmlFor="name" className="col-sm-12 col-form-label">
-                          Full name <span>*</span>
-                        </label>
-                        <div className="col-sm-12">
-                          <input type="text" className="form-control" id="name" placeholder="Full name" />
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="dob" className="col-sm-12 col-form-label">
-                          Date of birth
-                        </label>
-                        <div className="col-sm-12">
-                          <input type="text" className="form-control" id="dob" placeholder="Date of birth" />
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="email" className="col-sm-12 col-form-label">
-                          Email <span>*</span>
-                        </label>
-                        <div className="col-sm-12">
-                          <input type="text" className="form-control" id="email" placeholder="Email" />
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="phone" className="col-sm-12 col-form-label">
-                          Phone <span>*</span>
-                        </label>
-                        <div className="col-sm-12">
-                          <input type="number" className="form-control" id="phone" placeholder="Phone number" />
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={handleClose}>
-                    Close
-                  </Button>
-                  <Button variant="primary" onClick={handleClose}>
-                    Save Changes
-                  </Button>
-                </Modal.Footer>
-              </Modal>
-              <i class="fa fa-edit"></i>
-            </li>
-            <li class="list-inline-item">
-              <Button variant="danger btn-sm" onClick={handleShow}>
-                Delete
-              </Button>
-
-              <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                  <Modal.Title>Are you sure to delete this student?</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <div>
-                    <form method="POST">
-                      <div className="form-group row">
-                        <label htmlFor="name" className="col-sm-12 col-form-label">
-                          Full name <span>*</span>
-                        </label>
-                        <div className="col-sm-12">
-                          <input type="text" className="form-control" id="name" placeholder="Họ tên" />
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="dob" className="col-sm-12 col-form-label">
-                          Date of birth
-                        </label>
-                        <div className="col-sm-12">
-                          <input type="text" className="form-control" id="dob" placeholder="Năm sinh" />
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="email" className="col-sm-12 col-form-label">
-                          Email <span>*</span>
-                        </label>
-                        <div className="col-sm-12">
-                          <input type="text" className="form-control" id="email" placeholder="Email" />
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label htmlFor="phone" className="col-sm-12 col-form-label">
-                          Phone number <span>*</span>
-                        </label>
-                        <div className="col-sm-12">
-                          <input type="number" className="form-control" id="phone" placeholder="Số điện thoại" />
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={handleClose}>
-                    Close
-                  </Button>
-                  <Button variant="primary" onClick={handleClose}>
-                    Save Changes
-                  </Button>
-                </Modal.Footer>
-              </Modal>
-            </li>
-          </ul>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-);
+  // bật tắt modal edit
+  const openModalEdit = (
+    studentId,
+    studentName,
+    studentBirthday,
+    studentEmail,
+    studentPhone
+  ) => {
+    setShowModalEdit(true);
+    setId(studentId);
+    setName(studentName);
+    setBirthday(studentBirthday);
+    setEmail(studentEmail);
+    setPhone(studentPhone);
+  };
+  const closeModalEdit = () => {
+    setShowModalEdit(false);
+  };
+  return (
+    <div>
+      <Body
+        students={students}
+        openModalDelete={openModalDelete}
+        openModalAdd={openModalAdd}
+        openModalEdit={openModalEdit}
+      />
+      {showModalDelete && (
+        <ModalDelete
+          students={students}
+          setStudents={setStudents}
+          setShowModalDelete={setShowModalDelete}
+          Id={Id}
+          showModalDelete={showModalDelete}
+          closeModalDelete={closeModalDelete}
+        />
+      )}
+      {showModalAdd && (
+        <ModalAdd
+          closeModalAdd={closeModalAdd}
+          students={students}
+          setStudents={setStudents}
+          showModalAdd={showModalAdd}
+        />
+      )}
+      {showModalEdit && (
+        <ModalEdit
+          closeModalEdit={closeModalEdit}
+          showModalEdit={showModalEdit}
+          Id={Id}
+          students={students}
+          setStudents={setStudents}
+          name={name}
+          birthday={birthday}
+          email={email}
+          phone={phone}
+        />
+      )}
+    </div>
+  );
 }
 
 export default App;
+// lấy total count trong sever .
+// sort , paginate .
+// mockaroo .
